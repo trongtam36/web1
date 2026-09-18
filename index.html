@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>6MPC.COM - Xóa mã ẩn tài khoản</title>
+  <style>
+    :root {
+      --bg-0:#05090f;
+      --bg-1:#08111b;
+      --bg-2:#0d1621;
+      --card:rgba(12,22,34,.86);
+      --card-strong:#0c1622;
+      --line:rgba(177,255,57,.16);
+      --line-strong:rgba(177,255,57,.34);
+      --neon:#b7ff3c;
+      --neon-2:#d8ff86;
+      --yellow:#ffbf25;
+      --red:#ff5671;
+      --cyan:#2de2e6;
+      --text:#f6f9f4;
+      --muted:#7f91a6;
+      --muted-2:#617287;
+      --shadow:0 18px 70px rgba(0,0,0,.35);
+      --radius:18px;
+      --mx:50vw;
+      --my:30vh;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;background:var(--bg-0)}
+    body{
+      min-height:100vh;
+      color:var(--text);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(183,255,60,.055), transparent 28%),
+        radial-gradient(circle at 92% 78%, rgba(255,191,37,.055), transparent 30%),
+        linear-gradient(180deg,var(--bg-1),var(--bg-0) 58%,#071015);
+      overflow-x:hidden;
+      line-height:1.5;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:
+        radial-gradient(520px circle at var(--mx) var(--my), rgba(183,255,60,.075), transparent 60%),
+        linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.012) 1px, transparent 1px);
+      background-size:auto,52px 52px,52px 52px;
+      mask-image:linear-gradient(to bottom,black,rgba(0,0,0,.55));
+      will-change: background;
+    }
+
+    body::after{
+      content:"";position:fixed;inset:-50%;pointer-events:none;z-index:0;opacity:.32;
+      background-image:
+        radial-gradient(circle, rgba(183,255,60,.32) 0 1px, transparent 1.7px),
+        radial-gradient(circle, rgba(255,191,37,.20) 0 1px, transparent 1.6px);
+      background-size:160px 160px,220px 220px;
+      background-position:0 0,65px 85px;
+      animation:starDrift 28s linear infinite;
+      will-change: transform;
+    }
+    @keyframes starDrift{to{transform:translate3d(100px,120px,0)}}
+
+    .page{position:relative;z-index:1;width:min(1440px,100%);margin:0 auto;padding:24px 28px 60px}
+    .muted{color:var(--muted)}
+    .neon{color:var(--neon)}
+    .row{display:flex;align-items:center}
+    .between{display:flex;align-items:center;justify-content:space-between;gap:16px}
+
+    header{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
+      padding:6px 0 24px;border-bottom:1px solid rgba(255,255,255,.05);
+      animation:fadeDown .7s cubic-bezier(.2,.8,.2,1) both;
+      will-change: transform, opacity;
+    }
+    @keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+    .brand h1{
+      font-size:clamp(2rem,4vw,3.35rem);line-height:1;font-weight:900;letter-spacing:-.045em;
+      background:linear-gradient(90deg,#ecffd0 0%,var(--neon) 38%,#d7ff92 72%,#fff 100%);
+      background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+      filter:drop-shadow(0 0 18px rgba(183,255,60,.12));animation:brandSweep 6s ease-in-out infinite;
+    }
+    @keyframes brandSweep{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    .brand p{margin-top:10px;color:#8ea0b5;font-size:.95rem}
+    .clock{
+      display:flex;align-items:center;gap:9px;padding:8px 14px;border:1px solid rgba(255,191,37,.16);
+      border-radius:999px;background:rgba(255,191,37,.04);color:#8498ae;font:500 .78rem ui-monospace,SFMono-Regular,Menlo,monospace;
+      box-shadow:inset 0 0 18px rgba(255,191,37,.02);white-space:nowrap
+    }
+    .clock-dot{width:7px;height:7px;border-radius:50%;background:var(--neon);box-shadow:0 0 0 4px rgba(183,255,60,.07),0 0 16px var(--neon);animation:pulseDot 1.8s ease-in-out infinite}
+    @keyframes pulseDot{50%{transform:scale(.75);opacity:.55}}
+
+    .hero-note{padding:18px 2px 6px;color:#66788f;font-size:.84rem;border-bottom:1px solid rgba(255,191,37,.10)}
+
+    main{display:grid;grid-template-columns:minmax(0,2.15fr) minmax(320px,1fr);gap:26px;padding-top:34px;align-items:start}
+    .stack{display:grid;gap:24px}
+
+    .card{
+      position:relative;isolation:isolate;overflow:hidden;
+      background:linear-gradient(180deg,rgba(14,24,37,.95),rgba(9,18,28,.92));
+      border:1px solid var(--line);border-radius:var(--radius);padding:26px;
+      box-shadow:var(--shadow),inset 0 1px rgba(255,255,255,.02);
+      opacity:0;transform:translateY(16px) scale(.992);
+      animation:cardIn .68s cubic-bezier(.2,.8,.2,1) forwards;
+      will-change: transform, opacity, box-shadow;
+      transition: border-color .3s ease, box-shadow .3s ease;
+    }
+    .card:nth-child(2){animation-delay:.09s}
+    @keyframes cardIn{to{opacity:1;transform:none}}
+    .card::before{
+      content:"";position:absolute;inset:-1px;z-index:-2;border-radius:inherit;padding:1px;
+      background:linear-gradient(115deg,transparent 0 25%,rgba(183,255,60,.38) 43%,transparent 57% 100%);
+      background-size:240% 100%;opacity:.18;
+      -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+      animation:borderFlow 7s linear infinite;
+    }
+    @keyframes borderFlow{to{background-position:240% 0}}
+    .card::after{
+      content:"";position:absolute;width:340px;height:340px;left:var(--sx,50%);top:var(--sy,0%);transform:translate(-50%,-50%);
+      z-index:-1;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .28s ease;
+      background:radial-gradient(circle,rgba(183,255,60,.10),transparent 68%);
+      will-change: left, top;
+    }
+    .card:hover{border-color:rgba(183,255,60,.28);box-shadow:0 22px 80px rgba(0,0,0,.42),0 0 34px rgba(183,255,60,.035),inset 0 1px rgba(255,255,255,.03)}
+    .card:hover::after{opacity:1}
+
+    .section-title{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.16rem;letter-spacing:-.02em;color:#fff}
+    .icon-box{width:36px;height:36px;display:grid;place-items:center;border-radius:11px;background:rgba(255,191,37,.10);border:1px solid rgba(255,191,37,.08);color:var(--neon);box-shadow:inset 0 0 16px rgba(183,255,60,.03)}
+    .sub{margin-top:2px;margin-left:48px;color:var(--muted);font-size:.78rem}
+
+    .features{list-style:none;display:grid;gap:12px;margin:20px 0 24px}
+    .features li{display:flex;align-items:flex-start;gap:11px;color:#7f91a8;font-size:.91rem;transition:.22s ease}
+    .features li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--neon);margin-top:8px;box-shadow:0 0 14px rgba(183,255,60,.6);flex:0 0 auto}
+    .features li:hover{color:#b7c3cf;transform:translateX(4px)}
+
+    .btn{
+      position:relative;overflow:hidden;width:100%;min-height:54px;border:0;border-radius:13px;padding:0 18px;
+      font:800 .94rem/1 inherit;cursor:pointer;transition:transform .18s ease,box-shadow .25s ease,filter .25s ease,border-color .25s ease;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      will-change: transform;
+    }
+    .btn::after{content:"";position:absolute;top:-50%;left:-45%;width:28%;height:200%;transform:rotate(18deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);filter:blur(1px);animation:shine 4.8s ease-in-out infinite}
+    @keyframes shine{0%,65%{left:-45%}80%,100%{left:130%}}
+    .btn:active{transform:translateY(1px) scale(.995)}
+    .btn-primary{color:#081006;background:linear-gradient(90deg,#d9ff8d 0%,#a9f52a 55%,#95e710 100%);box-shadow:0 10px 28px rgba(165,240,27,.16),inset 0 1px rgba(255,255,255,.38)}
+    .btn-primary:hover:not(:disabled){transform:translateY(-2px);filter:saturate(1.12) brightness(1.04);box-shadow:0 15px 36px rgba(165,240,27,.25),0 0 30px rgba(183,255,60,.12)}
+    .btn-primary:disabled{opacity:.36;cursor:not-allowed;filter:saturate(.4)}
+    .btn-outline{margin-top:11px;color:var(--neon);background:linear-gradient(180deg,rgba(183,255,60,.025),rgba(183,255,60,.012));border:1px solid rgba(183,255,60,.24)}
+    .btn-outline:hover{border-color:rgba(183,255,60,.5);background:rgba(183,255,60,.06);box-shadow:inset 0 0 25px rgba(183,255,60,.03)}
+
+    .field-label{display:flex;align-items:center;gap:10px;color:#f1f5ef;font-weight:700;font-size:.93rem;margin:22px 0 10px}
+    .field-label .tiny-icon{color:var(--neon);font-size:1rem;filter:drop-shadow(0 0 8px rgba(183,255,60,.3))}
+
+    .select-wrap{position:relative}
+    .select-box,input[type="text"]{
+      width:100%;height:58px;border-radius:13px;border:1px solid rgba(183,255,60,.18);background:#050c12;color:#f4f8f2;
+      padding:0 16px;font:500 .95rem inherit;outline:none;transition:.25s ease;box-shadow:inset 0 0 0 1px rgba(255,255,255,.006)
+    }
+    input[type="text"]::placeholder{color:#54677b}
+    input[type="text"]:focus,.select-box:focus-within,.select-box.open{border-color:rgba(183,255,60,.48);box-shadow:0 0 0 4px rgba(183,255,60,.055),0 0 28px rgba(183,255,60,.04)}
+    .select-box{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+    .caret{color:var(--neon);transition:transform .26s ease,filter .26s ease}
+    .select-box.open .caret{transform:rotate(180deg);filter:drop-shadow(0 0 10px var(--neon))}
+
+    .options{
+      position:absolute;z-index:70;left:0;right:0;top:calc(100% + 9px);overflow:auto;max-height:430px;
+      border:1px solid rgba(255,191,37,.28);border-radius:15px;background:#110e0c;
+      box-shadow:0 26px 80px rgba(0,0,0,.58),0 0 40px rgba(255,191,37,.035);
+      opacity:0;visibility:hidden;transform:translateY(-8px) scale(.99);transform-origin:top;transition:.23s cubic-bezier(.2,.8,.2,1);
+      will-change: transform, opacity;
+    }
+    .options.show{opacity:1;visibility:visible;transform:none}
+    .options::-webkit-scrollbar{width:8px}.options::-webkit-scrollbar-track{background:#0b0908}.options::-webkit-scrollbar-thumb{background:#5e4217;border-radius:999px;border:2px solid #0b0908}
+    .option{
+      min-height:94px;display:grid;grid-template-columns:145px 145px 1fr;align-items:stretch;cursor:pointer;
+      background:linear-gradient(90deg,#171413 0 31%,rgba(95,58,12,.34) 31% 100%);border-bottom:1px solid rgba(255,191,37,.08);
+      transition:filter .2s ease,transform .2s ease,background .2s ease;
+    }
+    .option:last-child{border-bottom:0}
+    .option:hover{filter:brightness(1.13);background:linear-gradient(90deg,#1b1715 0 31%,rgba(121,75,16,.42) 31% 100%)}
+    .option > div{padding:14px}
+    .opt-name{display:flex;align-items:flex-start;color:var(--neon);font-weight:900;font-size:.98rem;border-right:1px solid rgba(255,191,37,.08)}
+    .opt-meta{font-size:.76rem;color:#6f8196;border-right:1px solid rgba(255,191,37,.12);line-height:1.55}
+    .opt-meta strong{font-size:1rem;color:var(--yellow)}
+    .opt-action{display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.55;font-size:.86rem;font-weight:800;color:var(--neon)}
+    .opt-action span{display:block;color:var(--yellow);margin-top:3px;text-shadow:0 0 14px rgba(255,191,37,.08)}
+    .option.low .opt-meta strong{color:#ff6281}
+
+    .sys-grid{display:grid;gap:10px;margin-top:20px}
+    .sys-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 16px;border:1px solid rgba(255,255,255,.36);border-radius:13px;background:rgba(2,7,12,.38);transition:.22s ease}
+    .sys-row:hover{border-color:rgba(183,255,60,.3);transform:translateX(3px);background:rgba(183,255,60,.018)}
+    .sys-label{display:flex;align-items:center;gap:10px;color:#8395aa;font-size:.83rem}.sys-label i{font-style:normal;color:var(--neon)}
+    .sys-value{color:#fff;font-weight:800;font-size:.83rem;text-align:right}
+    .mini-status{margin-top:18px;display:grid;gap:13px;padding:18px;border:1px solid var(--line);border-radius:15px;background:rgba(7,15,24,.66)}
+    .mini-line{display:flex;justify-content:space-between;gap:20px;color:#71839a;font-size:.77rem}.mini-line b{color:#fff}.mini-line .ok{color:var(--neon)}
+    .online-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;background:#37dda4;box-shadow:0 0 12px #37dda4;animation:pulseDot 1.4s ease-in-out infinite}
+
+    .toggle-card{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .toggle-copy{display:flex;gap:13px;align-items:center}.toggle-copy .shield{color:var(--neon);font-size:1.12rem}.toggle-copy h3{font-size:.88rem}.toggle-copy p{font-size:.72rem;color:#71839a;margin-top:3px}
+    .switch{position:relative;width:46px;height:25px;flex:0 0 auto}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;cursor:pointer;border-radius:99px;background:#17202a;border:1px solid #35404b;transition:.28s}.slider::after{content:"";position:absolute;width:17px;height:17px;left:3px;top:3px;border-radius:50%;background:#718091;transition:.28s}.switch input:checked+.slider{background:rgba(183,255,60,.15);border-color:rgba(183,255,60,.55);box-shadow:0 0 20px rgba(183,255,60,.08)}.switch input:checked+.slider::after{transform:translateX(21px);background:var(--neon);box-shadow:0 0 13px rgba(183,255,60,.55)}
+
+    .live-card{margin-top:26px;padding:0;overflow:hidden}
+    .live-head{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.05)}
+    .live-title{font-weight:800;display:flex;align-items:center;gap:11px}.live-title span:first-child{color:var(--neon)}
+    .live-badge{font-size:.68rem;color:var(--neon);font-weight:800;text-shadow:0 0 12px rgba(183,255,60,.45);animation:pulseDot 1.7s ease-in-out infinite}
+    .logs{padding:12px 22px 20px;display:grid;gap:7px;max-height:305px;overflow:hidden}
+    .log{padding:10px 12px;border-radius:8px;background:rgba(2,8,14,.5);color:#596d83;font-size:.81rem;animation:logIn .42s cubic-bezier(.2,.8,.2,1) both}.log b{color:#9ddd2e}.log small{display:block;margin-top:4px;color:#475b71;font-size:.67rem}
+    @keyframes logIn{from{opacity:0;transform:translateY(-7px);filter:blur(2px)}to{opacity:1;transform:none;filter:none}}
+
+    .faq{margin:44px auto 0;padding:30px 20px 10px;border-top:1px solid rgba(255,255,255,.52);max-width:100%}.faq-inner{max-width:820px;margin:auto}.faq h3{margin-bottom:24px;font-size:1.05rem}.faq-item{margin-bottom:22px}.faq-item h4{color:var(--neon);font-size:.85rem;margin-bottom:7px}.faq-item p{color:#71839a;font-size:.82rem;line-height:1.75}
+
+    .toast{position:fixed;z-index:250;right:24px;top:24px;padding:13px 16px;border-radius:12px;border:1px solid rgba(183,255,60,.3);background:rgba(7,15,23,.94);box-shadow:0 18px 55px rgba(0,0,0,.45),0 0 24px rgba(183,255,60,.05);color:#d7e2d1;font-size:.8rem;opacity:0;transform:translateY(-10px) scale(.98);pointer-events:none;transition:opacity .3s ease, transform .3s ease;will-change: transform, opacity}.toast.show{opacity:1;transform:none}
+
+    .overlay{position:fixed;inset:0;z-index:200;display:none;place-items:center;padding:20px;background:rgba(0,0,0,.80);backdrop-filter:blur(10px);will-change: opacity}.overlay.show{display:grid;animation:overlayIn .3s ease both}@keyframes overlayIn{from{opacity:0}to{opacity:1}}
+    .loading-card{width:min(360px,92vw);padding:38px 28px;text-align:center;border-radius:18px;background:linear-gradient(180deg,#101926,#0b121b);border:1px solid rgba(183,255,60,.14);box-shadow:0 30px 100px rgba(0,0,0,.58),0 0 70px rgba(183,255,60,.06);animation:modalIn .4s cubic-bezier(.2,.8,.2,1) both;will-change: transform, opacity}.spinner{width:46px;height:46px;margin:0 auto 20px;border-radius:50%;border:3px solid rgba(183,255,60,.08);border-top-color:var(--neon);border-right-color:rgba(183,255,60,.6);animation:spin .85s linear infinite;box-shadow:0 0 28px rgba(183,255,60,.08)}@keyframes spin{to{transform:rotate(360deg)}}.loading-card h3{font-size:1.02rem}.loading-card p{margin-top:7px;color:#697c90;font-size:.76rem}
+
+    .modal{width:min(520px,94vw);max-height:90vh;overflow:auto;padding:30px;border-radius:20px;background:linear-gradient(180deg,#120b10,#0b080b);border:1px solid #3b1720;box-shadow:0 34px 110px rgba(0,0,0,.65),0 0 65px rgba(255,86,113,.05);animation:modalIn .4s cubic-bezier(.2,.8,.2,1) both;will-change: transform, opacity}@keyframes modalIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}.x-ring{width:45px;height:45px;border-radius:50%;border:2px solid var(--red);display:grid;place-items:center;margin:0 auto 16px;color:var(--red);font-size:1.2rem;box-shadow:0 0 30px rgba(255,86,113,.08)}.modal h2{text-align:center;color:var(--red);font-size:1.34rem}.modal .subtitle{text-align:center;color:#a07983;margin:6px 0 20px;font-size:.87rem}.modal ul{list-style:none;display:grid;gap:10px;margin:0 0 22px}.modal li{display:flex;gap:10px;color:#a17a84;font-size:.8rem;line-height:1.55}.modal li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--red);margin-top:7px;flex:0 0 auto}.modal table{width:100%;border-collapse:collapse;border:1px solid #31151c}.modal td{padding:11px 13px;border-bottom:1px solid #31151c;font-size:.79rem}.modal tr:last-child td{border-bottom:0}.modal td:first-child{color:#77505a}.modal td:last-child{text-align:right;color:var(--red);font-weight:700}.modal-close{margin-top:20px;width:100%;height:46px;border:1px solid #3b1720;border-radius:10px;background:transparent;color:var(--red);font-weight:800;cursor:pointer;transition:.22s}.modal-close:hover{background:rgba(255,86,113,.06);border-color:rgba(255,86,113,.38)}
+
+    .ripple{position:absolute;border-radius:50%;transform:scale(0);background:rgba(255,255,255,.38);pointer-events:none;animation:ripple .55s linear forwards}@keyframes ripple{to{transform:scale(4);opacity:0}}
+
+    @media (max-width:980px){.page{padding:18px 18px 46px}main{grid-template-columns:1fr}.right-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}.right-col .card{margin:0}.option{grid-template-columns:120px 130px 1fr}}
+    @media (max-width:700px){header{align-items:flex-start;flex-direction:column}.clock{align-self:flex-start}.hero-note{line-height:1.6}main{padding-top:24px}.right-col{grid-template-columns:1fr}.card{padding:20px;border-radius:15px}.option{grid-template-columns:1fr;min-height:0}.opt-name,.opt-meta{border-right:0;border-bottom:1px solid rgba(255,191,37,.08)}.opt-action{justify-content:flex-start;text-align:left;padding-top:11px!important}.options{max-height:58vh}.faq{padding-inline:0}}
+
+
+    /* ===== FLOAT CONTACT + TRANSITION EFFECTS ===== */
+    .float-contact{
+      position:fixed;right:28px;bottom:28px;z-index:140;width:62px;height:62px;border-radius:50%;border:0;
+      display:grid;place-items:center;cursor:pointer;color:#fff;background:linear-gradient(145deg,#28b8ff,#0788d2 62%,#0667b5);
+      box-shadow:0 14px 38px rgba(0,136,204,.32),0 0 0 1px rgba(255,255,255,.12) inset;
+      transition:transform .22s ease,filter .22s ease,box-shadow .22s ease;animation:floatBob 3s ease-in-out infinite;
+      will-change: transform;
+    }
+    .float-contact:hover{transform:translateY(-4px) scale(1.05);filter:brightness(1.08);box-shadow:0 20px 50px rgba(0,136,204,.44),0 0 28px rgba(45,226,230,.20)}
+    .float-contact:active{transform:scale(.96)}
+    .float-contact svg{width:31px;height:31px;filter:drop-shadow(0 3px 5px rgba(0,0,0,.28))}
+    .float-contact::before,.float-contact::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(45,226,230,.28);animation:contactPulse 2.2s ease-out infinite}
+    .float-contact::after{animation-delay:1.1s}
+    @keyframes contactPulse{0%{transform:scale(.82);opacity:0}25%{opacity:.8}100%{transform:scale(1.5);opacity:0}}
+    @keyframes floatBob{50%{translate:0 -5px}}
+
+    .action-link-btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:7px;margin-top:4px;padding:5px 10px;border:0;border-radius:8px;
+      color:var(--yellow);background:transparent;font:900 .83rem/1.2 inherit;cursor:pointer;position:relative;overflow:hidden;
+      text-shadow:0 0 14px rgba(255,191,37,.14);transition:transform .18s ease,color .18s ease,background .18s ease,box-shadow .18s ease;
+    }
+    .action-link-btn:hover{transform:translateY(-1px);color:#ffd866;background:rgba(255,191,37,.08);box-shadow:0 0 20px rgba(255,191,37,.06)}
+    .action-link-btn::after{content:"";position:absolute;inset:-60% -30%;background:linear-gradient(100deg,transparent 40%,rgba(255,255,255,.35) 50%,transparent 60%);transform:translateX(-70%);animation:actionShine 3.8s ease-in-out infinite;pointer-events:none}
+    @keyframes actionShine{0%,68%{transform:translateX(-70%)}82%,100%{transform:translateX(70%)}}
+
+    .transition-card{width:min(390px,92vw);padding:34px 28px;text-align:center;border-radius:20px;background:linear-gradient(180deg,#0e1823,#09111a);border:1px solid rgba(183,255,60,.18);box-shadow:0 30px 100px rgba(0,0,0,.65),0 0 72px rgba(183,255,60,.07);animation:modalIn .34s cubic-bezier(.2,.8,.2,1) both;overflow:hidden;position:relative;will-change: transform, opacity}
+    .transition-card::before{content:"";position:absolute;inset:-1px;background:linear-gradient(120deg,transparent,rgba(183,255,60,.18),transparent);transform:translateX(-100%);animation:scanSweep 1.45s linear infinite;pointer-events:none}
+    @keyframes scanSweep{to{transform:translateX(100%)}}
+    .portal-rings{position:relative;width:88px;height:88px;margin:0 auto 20px}
+    .portal-rings span{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(183,255,60,.26);animation:ringSpin 1.8s linear infinite}
+    .portal-rings span:nth-child(2){inset:10px;border-color:rgba(255,191,37,.42);animation-direction:reverse;animation-duration:1.25s}
+    .portal-rings span:nth-child(3){inset:22px;border:3px solid transparent;border-top-color:var(--neon);border-right-color:var(--neon);animation-duration:.72s;box-shadow:0 0 24px rgba(183,255,60,.08)}
+    @keyframes ringSpin{to{transform:rotate(360deg)}}
+    .transition-card h3{font-size:1.08rem;color:#fff}.transition-card p{margin-top:7px;color:#72859a;font-size:.79rem}
+    .transition-progress{height:6px;border-radius:999px;background:#111d29;margin-top:22px;overflow:hidden;border:1px solid rgba(255,255,255,.04)}
+    .transition-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--neon),#eaffaf,var(--yellow));box-shadow:0 0 16px rgba(183,255,60,.35);animation:progress1200ms 1.2s linear forwards}
+    @keyframes progress1200ms{to{width:100%}}
+    .transition-steps{display:flex;justify-content:space-between;gap:8px;margin-top:10px;color:#53677d;font-size:.67rem}.transition-steps .active{color:var(--neon)}
+    .shake-once{animation:softJump .42s cubic-bezier(.2,.8,.2,1)}
+    @keyframes softJump{0%{transform:scale(1)}35%{transform:translateY(-4px) scale(1.015)}70%{transform:translateY(1px) scale(.995)}100%{transform:none}}
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <h1>6MPC.COM</h1>
+        <p>Xóa mã ẩn mọi tài khoản — không còn bị nhà cái theo dõi</p>
+      </div>
+      <div class="clock"><span class="clock-dot"></span><span id="clock"></span></div>
+    </header>
+
+    <div class="hero-note">Hệ thống kiểm tra và bóc tách mã độc ra khỏi tài khoản, giúp bạn thoát khỏi các chương trình theo dõi của nhà cái.</div>
+
+    <main>
+      <section class="left-col stack">
+        <article class="card spotlight">
+          <div class="section-title"><span class="icon-box">✣</span><span>Code Manager</span></div>
+          <div class="sub">Bảo vệ & làm sạch tài khoản</div>
+          <ul class="features">
+            <li>Xóa mã ẩn và mã bảo mật khỏi hệ thống một cách an toàn</li>
+            <li>Chặn IP theo dõi và xóa lịch sử truy cập bị giám sát</li>
+            <li>Thiết lập lớp bảo mật 2FA và xác thực đa yếu tố</li>
+            <li>Giám sát hoạt động real-time và phát hiện xâm nhập</li>
+          </ul>
+          <button class="btn btn-primary ripple-btn" id="btnRedirect"><span>⚡</span> Cổng đã xoá mã đại lý</button>
+        </article>
+
+        <article class="card spotlight" style="overflow:visible">
+          <div class="section-title"><span class="icon-box">▢</span><span>System Targets</span></div>
+          <div class="sub">Chọn cổng & thực thi xóa mã ẩn</div>
+
+          <div class="field-label"><span class="tiny-icon">◈</span> Chọn cổng game đang được tối ưu</div>
+          <div class="select-wrap" id="selectWrap">
+            <div class="select-box" id="selectBox" role="button" tabindex="0" aria-expanded="false">
+              <span id="selectedGame">Vui lòng chọn cổng game...</span><span class="caret">▲</span>
+            </div>
+            <div class="options" id="options"></div>
+          </div>
+
+          <div class="field-label"><span class="tiny-icon">▱</span> Tài khoản để thực thi</div>
+          <input type="text" id="account" placeholder="Nhập tài khoản của bạn..." autocomplete="off" />
+
+          <button class="btn btn-primary ripple-btn" id="btnRun" disabled style="margin-top:14px">›_ Chạy xoá mã ẩn</button>
+          <button class="btn btn-outline ripple-btn" id="btnContact">Liên hệ hỗ trợ xoá mã ẩn</button>
+        </article>
+      </section>
+
+      <aside class="right-col stack">
+        <article class="card spotlight">
+          <div class="section-title"><span class="icon-box">◎</span><span>System Info</span></div>
+          <div class="sys-grid">
+            <div class="sys-row"><span class="sys-label"><i>◎</i> IP</span><span class="sys-value">14.226.249.121</span></div>
+            <div class="sys-row"><span class="sys-label"><i>▣</i> Device</span><span class="sys-value">Desktop</span></div>
+            <div class="sys-row"><span class="sys-label"><i>◫</i> OS</span><span class="sys-value">Windows</span></div>
+            <div class="sys-row"><span class="sys-label"><i>◎</i> Browser</span><span class="sys-value">Microsoft Edge</span></div>
+          </div>
+          <div class="mini-status">
+            <div class="mini-line"><span>Status</span><b class="ok"><span class="online-dot"></span>ONLINE</b></div>
+            <div class="mini-line"><span>Location</span><b>VIETNAM</b></div>
+            <div class="mini-line"><span>Protocol</span><b class="ok">◈ SECURE</b></div>
+          </div>
+        </article>
+
+        <article class="card spotlight toggle-card">
+          <div class="toggle-copy"><span class="shield">♢</span><div><h3>Thiết lập bảo mật 2 lớp 2FA</h3><p>Click để thiết lập 2 lớp bảo mật và chế độ đa tường lửa</p></div></div>
+          <label class="switch"><input type="checkbox" id="toggle2fa"><span class="slider"></span></label>
+        </article>
+      </aside>
+    </main>
+
+    <article class="card live-card spotlight">
+      <div class="live-head between"><div class="live-title"><span>⌁</span><span>Live Activity</span></div><span class="live-badge">LIVE</span></div>
+      <div class="logs" id="logs"></div>
+    </article>
+
+    <section class="faq">
+      <div class="faq-inner">
+        <h3>Câu hỏi thường gặp về mã ẩn</h3>
+        <div class="faq-item"><h4>Mã ẩn là gì?</h4><p>Mã ẩn là đoạn code do nhà cái cài vào, dùng AI để theo dõi hành vi nạp cược nhằm nhấp nhả, kích thích và thao túng tâm lý người chơi.</p></div>
+        <div class="faq-item"><h4>Làm cách nào để xóa mã ẩn?</h4><p>Trang 6mpc.com là hệ thống kiểm tra và bóc tách mã độc ra khỏi tài khoản của khách hàng. Đồng thời hệ thống này cũng tạo lớp vỏ bọc giúp thoát khỏi các chương trình theo dõi của nhà cái.</p></div>
+      </div>
+    </section>
+  </div>
+
+  <button class="float-contact" id="floatContact" type="button" aria-label="Liên hệ hỗ trợ">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.7 3.4 18.5 19c-.2 1.1-.9 1.4-1.8.9l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9-8.1c.4-.4-.1-.6-.6-.2L6.1 12.8 1.3 11.3c-1-.3-1-1 .2-1.4L20 2.8c.9-.3 1.9.2 1.7.6Z"/></svg>
+  </button>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Loading khi ấn "Cổng đã xóa mã đại lý" -->
+  <div class="overlay" id="loadingOverlay">
+    <div class="transition-card">
+      <div class="portal-rings"><span></span><span></span><span></span></div>
+      <h3>Đang tìm cổng đang nhả</h3>
+      <p>Quét node · lọc latency · xác thực cổng...</p>
+      <div class="transition-progress" style="animation-name: progress2s; animation-duration: 2s;"><i style="animation-name: inherit; animation-duration: inherit;"></i></div>
+      <div class="transition-steps"><span class="active">QUÉT NODE</span><span>LỌC</span><span>XÁC THỰC</span></div>
+    </div>
+  </div>
+
+  <!-- Loading khi ấn liên hệ qua Telegram -->
+  <div class="overlay" id="navOverlay">
+    <div class="transition-card">
+      <div class="portal-rings"><span></span><span></span><span></span></div>
+      <h3>Đang mở kênh hỗ trợ</h3>
+      <p>Khởi tạo liên kết · kiểm tra phiên · chuẩn bị chuyển hướng...</p>
+      <div class="transition-progress" style="animation-name: progress1200ms; animation-duration: 1.2s;"><i style="animation-name: inherit; animation-duration: inherit;"></i></div>
+      <div class="transition-steps"><span class="active">KẾT NỐI</span><span>BẢO MẬT</span><span>MỞ KÊNH</span></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="errorOverlay">
+    <div class="modal">
+      <div class="x-ring">×</div>
+      <h2>Tài khoản dính mã đại lý</h2>
+      <div class="subtitle">Không thể xoá mã ẩn khỏi hệ thống</div>
+      <ul>
+        <li>Không thể xoá chế độ theo dõi từ thiết bị và địa chỉ ip khỏi cổng game.</li>
+        <li>Mã ẩn vẫn còn hiệu lực trên hệ thống máy chủ.</li>
+        <li>Tỉ lệ nhả chưa được tối ưu cho tài khoản này.</li>
+        <li>Yêu cầu xoá mã đã được ghi nhận nhưng chưa hoàn tất, vui lòng liên hệ hỗ trợ.</li>
+      </ul>
+      <table>
+        <tr><td>Ngày xoá</td><td id="mDate"></td></tr>
+        <tr><td>Giờ xoá</td><td id="mTime"></td></tr>
+        <tr><td>Tài khoản</td><td id="mAcc"></td></tr>
+        <tr><td>Cổng game</td><td id="mGame"></td></tr>
+        <tr><td>Trạng thái</td><td>Thất bại</td></tr>
+      </table>
+      <button class="modal-close" id="modalClose">Đóng</button>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const $ = (s, root=document) => root.querySelector(s);
+      const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+
+      // Khai báo các đường link chức năng
+      const telegramLink = 'https://t.me/Trong_Tam25';
+      const redirectGameLink = 'https://u888q3e.com/?f=6413743';
+
+      const gameData = [
+        {id:'1-U888',rate:98,status:'CỔNG TỐI ƯU HÓA MÃ ẨN'},
+        {id:'2-OPEN88',rate:80,status:'CỔNG ĐÃ XÓA MÃ ẨN - LINK ĐÃ ĐƯỢC LÀM SẠCH'},
+        {id:'3-MM88',rate:79,status:'CỔNG ĐÃ XÓA MÃ ẨN - LINK ĐÃ ĐƯỢC LÀM SẠCH'},
+        {id:'4-GG88',rate:78,status:'CỔNG ĐÃ XÓA MÃ ẨN - LINK ĐÃ ĐƯỢC LÀM SẠCH'},
+        {id:'5-FLY88',rate:73,status:'CỔNG ĐÃ XÓA MÃ ẨN - LINK ĐÃ ĐƯỢC LÀM SẠCH'},
+        {id:'6-SC88',rate:66,status:'CỔNG ĐÃ XÓA MÃ ẨN - LINK ĐÃ ĐƯỢC LÀM SẠCH'},
+        {id:'7-789BET',rate:56,status:'CỔNG ĐÃ XÓA MÃ ẨN - LINK ĐÃ ĐƯỢC LÀM SẠCH'},
+        {id:'8-ON68',rate:51,status:'CỔNG ĐÃ XÓA MÃ ẨN - LINK ĐÃ ĐƯỢC LÀM SẠCH'},
+        {id:'9-CM88',rate:44,status:'CỔNG ĐÃ XÓA MÃ ẨN - LINK ĐÃ ĐƯỢC LÀM SẠCH'},
+        {id:'10-LLWIN',rate:39,status:'CỔNG ĐÃ XÓA MÃ ẨN - LINK ĐÃ ĐƯỢC LÀM SẠCH'},
+        {id:'11-QH88',rate:35,status:'CỔNG ĐÃ XÓA MÃ ẨN - LINK ĐÃ ĐƯỢC LÀM SẠCH'},
+        {id:'12-MB66',rate:29,status:'CỔNG ĐÃ XÓA MÃ ẨN - LINK ĐÃ ĐƯỢC LÀM SẠCH'}
+      ];
+
+      const selectBox = $('#selectBox');
+      const options = $('#options');
+      const selectedGame = $('#selectedGame');
+      const account = $('#account');
+      const btnRun = $('#btnRun');
+      const loadingOverlay = $('#loadingOverlay');
+      const navOverlay = $('#navOverlay');
+      const errorOverlay = $('#errorOverlay');
+      const toast = $('#toast');
+      let selected = '';
+      let toastTimer;
+
+      function updateClock(){
+        const now = new Date();
+        $('#clock').textContent = now.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+now.toLocaleTimeString('vi-VN',{hour12:false});
+      }
+      updateClock(); setInterval(updateClock,1000);
+
+      function showToast(text){
+        toast.textContent = text;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(()=>toast.classList.remove('show'),2600);
+      }
+
+      function renderOptions(){
+        options.innerHTML = gameData.map(g => `
+          <div class="option ${g.rate<50?'low':''}" data-id="${g.id}">
+            <div class="opt-name">${g.id}</div>
+            <div class="opt-meta">18/09/2026<br>Tỷ lệ nhả <strong>${g.rate}%</strong><br>Khung giờ <b style="color:#fff">23:40<br>24:00</b></div>
+            <div class="opt-action"><div>${g.status}<button type="button" class="action-link-btn" data-action="contact">ẤN NGAY TẠI ĐÂY <span aria-hidden="true">↗</span></button></div></div>
+          </div>`).join('');
+      }
+      renderOptions();
+
+      function setOpen(open){
+        options.classList.toggle('show',open);
+        selectBox.classList.toggle('open',open);
+        selectBox.setAttribute('aria-expanded', String(open));
+      }
+      selectBox.addEventListener('click',()=>setOpen(!options.classList.contains('show')));
+      selectBox.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setOpen(!options.classList.contains('show'))}});
+      document.addEventListener('click',e=>{if(!$('#selectWrap').contains(e.target)) setOpen(false)});
+
+      options.addEventListener('click',e=>{
+        const action=e.target.closest('[data-action="contact"]');
+        if(action){
+          e.stopPropagation();
+          action.classList.remove('shake-once'); void action.offsetWidth; action.classList.add('shake-once');
+          runContactTransition();
+          return;
+        }
+        const item=e.target.closest('.option');
+        if(!item) return;
+        selected=item.dataset.id;
+        selectedGame.textContent=selected;
+        setOpen(false);
+        validate();
+      });
+
+      function validate(){btnRun.disabled=!(selected && account.value.trim())}
+      account.addEventListener('input',validate);
+
+      btnRun.addEventListener('click',()=>{
+        if(btnRun.disabled) return;
+        const now=new Date();
+        $('#mDate').textContent=now.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'});
+        $('#mTime').textContent=now.toLocaleTimeString('vi-VN',{hour12:false});
+        $('#mAcc').textContent=account.value.trim();
+        $('#mGame').textContent=selected;
+        errorOverlay.classList.add('show');
+      });
+      $('#modalClose').addEventListener('click',()=>errorOverlay.classList.remove('show'));
+      errorOverlay.addEventListener('click',e=>{if(e.target===errorOverlay)errorOverlay.classList.remove('show')});
+
+      function restartProgress(overlay, animName, duration){
+        const bar=overlay.querySelector('.transition-progress i');
+        if(bar){ 
+          bar.style.animation='none'; 
+          void bar.offsetWidth; 
+          bar.style.animation=`${animName} ${duration} linear forwards`; 
+        }
+      }
+
+      // Xử lý Liên kết Telegram (Kênh hỗ trợ)
+      function runContactTransition(){
+        restartProgress(navOverlay, 'progress1200ms', '1.2s');
+        navOverlay.classList.add('show');
+        setTimeout(()=>{
+          navOverlay.classList.remove('show');
+          window.open(telegramLink, '_blank'); // Chuyển trang thực tế
+        }, 1200); // 1.2s trải nghiệm mượt mà
+      }
+
+      // Xử lý Liên kết Cổng Xoá Mã
+      $('#btnRedirect').addEventListener('click',()=>{
+        restartProgress(loadingOverlay, 'progress2s', '2s');
+        loadingOverlay.classList.add('show');
+        setTimeout(()=>{
+          window.location.href = redirectGameLink; // Chuyển trang thực tế sau đúng 2s
+        }, 2000); 
+      });
+
+      // Liên kết các nút khác tới tính năng Telegram
+      $('#btnContact').addEventListener('click',runContactTransition);
+      $('#floatContact').addEventListener('click',runContactTransition);
+      
+      // Chức năng 2FA
+      $('#toggle2fa').addEventListener('change',e=>showToast(e.target.checked?'Đang khởi tạo thiết lập bảo mật 2 lớp 2FA...':'Đã tắt bảo mật 2FA.'));
+
+      document.addEventListener('keydown',e=>{if(e.key==='Escape'){setOpen(false);errorOverlay.classList.remove('show');loadingOverlay.classList.remove('show');navOverlay.classList.remove('show')}});
+
+      // Auto log live
+      const users=['truongminh7610','luongquang6744','tranphong8884','lyphong8795','nguyennhuynh8325'];
+      const actions=['đã đồng bộ dữ liệu thành công','đã kích hoạt bảo mật 2FA','đã hoàn tất quét hệ thống','đã khởi tạo phiên làm việc'];
+      const logs=$('#logs');
+      function addLog(){
+        const user=users[Math.floor(Math.random()*users.length)], action=actions[Math.floor(Math.random()*actions.length)];
+        const div=document.createElement('div'); div.className='log';
+        div.innerHTML=`<b>● ${user}</b> ${action}<small>${new Date().toLocaleDateString('vi-VN')} ${new Date().toLocaleTimeString('vi-VN',{hour12:false})}</small>`;
+        logs.prepend(div); while(logs.children.length>6) logs.lastElementChild.remove();
+      }
+      for(let i=0;i<5;i++) addLog(); setInterval(addLog,3200);
+
+      // Hiệu ứng Spotlight chuột
+      document.addEventListener('pointermove',e=>{
+        document.documentElement.style.setProperty('--mx',e.clientX+'px');
+        document.documentElement.style.setProperty('--my',e.clientY+'px');
+      },{passive:true});
+
+      $$('.spotlight').forEach(card=>card.addEventListener('pointermove',e=>{         const r=card.getBoundingClientRect();         card.style.setProperty('--sx',(e.clientX-r.left)+'px');         card.style.setProperty('--sy',(e.clientY-r.top)+'px');       },{passive:true}));        // Hiệu ứng Ripple click       $$
+('.ripple-btn').forEach(btn=>btn.addEventListener('click',e=>{
+        const r=btn.getBoundingClientRect();
+        const d=Math.max(r.width,r.height); const rip=document.createElement('span');
+        rip.className='ripple'; rip.style.width=rip.style.height=d+'px';
+        rip.style.left=(e.clientX-r.left-d/2)+'px'; rip.style.top=(e.clientY-r.top-d/2)+'px';
+        btn.appendChild(rip); setTimeout(()=>rip.remove(),620);
+      }));
+    })();
+  </script>
+</body>
+</html>
